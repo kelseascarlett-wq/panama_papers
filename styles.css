@@ -16,7 +16,7 @@
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body {
-  zoom: 0.62;
+  zoom: 0.50;
   margin: 0;
   color: var(--ink);
   background: var(--paper);
