@@ -14,7 +14,7 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; font-size: 85%; }
+html { scroll-behavior: smooth; font-size: 75%; }
 
 body {
   margin: 0;
