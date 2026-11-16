@@ -14,7 +14,17 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; font-size: 75%; }
+html { scroll-behavior: smooth; }
+body {
+  zoom: 0.75;
+  margin: 0;
+  color: var(--ink);
+  background: var(--paper);
+  font-family: var(--sans);
+  line-height: 1.65;
+  text-rendering: optimizeLegibility;
+}
+
 
 body {
   margin: 0;
