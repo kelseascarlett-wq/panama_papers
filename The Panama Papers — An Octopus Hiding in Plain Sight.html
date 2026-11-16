@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A data investigation tracing the intermediaries behind the Panama Papers.">
+  <meta name="theme-color" content="#0a2224">
+  <title>The Panama Papers — An Octopus Hiding in Plain Sight</title>
+  <link rel="preconnect" href="https://public.tableau.com">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="progress" aria-hidden="true"><span id="progress-bar"></span></div>
+
+  <header class="hero">
+    <nav class="site-nav" aria-label="Article navigation">
+      <a class="wordmark" href="#top">Data investigation</a>
+      <a href="#method">Method</a>
+      <a href="#findings">Findings</a>
+      <a href="#twist">The twist</a>
+    </nav>
+    <div class="hero-grid" id="top">
+      <div class="hero-copy">
+        <p class="eyebrow">Panama Papers · Offshore finance · Entity resolution</p>
+        <h1>The Panama Papers</h1>
+        <p class="dek">An octopus hiding in plain sight</p>
+        <p class="standfirst">A simple ranking of offshore intermediaries led to an unexpected result. Following that result meant questioning what the database appeared to show.</p>
+        <a class="read-link" href="#opening">Follow the investigation <span aria-hidden="true">↓</span></a>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <svg viewBox="0 0 560 560" role="img">
+          <defs>
+            <radialGradient id="glow" cx="50%" cy="45%" r="60%">
+              <stop offset="0" stop-color="#c7ece5" stop-opacity=".32"/>
+              <stop offset="1" stop-color="#c7ece5" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <circle cx="280" cy="280" r="250" fill="url(#glow)"/>
+          <g fill="none" stroke-linecap="round">
+            <path d="M281 238 C276 151 207 87 121 83"/>
+            <path d="M268 244 C199 191 109 202 61 270"/>
+            <path d="M266 263 C177 279 123 350 143 438"/>
+            <path d="M281 273 C233 344 253 438 328 488"/>
+            <path d="M297 267 C367 322 447 314 503 251"/>
+            <path d="M301 248 C382 231 432 166 423 91"/>
+            <path d="M293 272 C339 356 424 403 501 370"/>
+            <path d="M273 256 C211 231 158 249 118 307"/>
+          </g>
+          <g class="nodes">
+            <circle cx="281" cy="253" r="23"/>
+            <circle cx="121" cy="83" r="9"/><circle cx="61" cy="270" r="9"/>
+            <circle cx="143" cy="438" r="9"/><circle cx="328" cy="488" r="9"/>
+            <circle cx="503" cy="251" r="9"/><circle cx="423" cy="91" r="9"/>
+            <circle cx="501" cy="370" r="9"/><circle cx="118" cy="307" r="7"/>
+          </g>
+        </svg>
+        <p>Conceptual network illustration</p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <article>
+      <section class="prose opening" id="opening">
+        <p class="dropcap">In 2016, the Panama Papers exposed the secretive infrastructure of offshore finance. Millions of leaked records from the Panamanian law firm Mossack Fonseca, spanning nearly four decades from 1977 to 2015, were obtained by <em>Süddeutsche Zeitung</em> and shared with the International Consortium of Investigative Journalists (ICIJ). The data revealed how shell companies obscure true ownership and move assets far beyond public scrutiny. Politicians, billionaires, and business executives dominated the headlines, but I was interested in the middlemen processing the paperwork: the intermediaries.</p>
+        <p>As a friend in global finance put it to me, the Panama Papers might have detonated into a much larger scandal had Brexit and Trump’s 2016 election not driven the story off the front pages. Instead, global attention fractured, allowing an extraordinary cache of records to fade from view before the public ever grasped how the system actually worked.</p>
+        <p>To trace them, I built a dataset by joining the leaked intermediaries, relationships, and entities tables, tracking unique company IDs to make sure the records lined up accurately. In this schema, an <em>entity</em> is the offshore company, trust, or foundation, while an <em>intermediary</em> is the agent or firm recorded as facilitating that setup. It is important to note that while these relationships track structural linkages, they do not on their own establish any wrongdoing, though they point directly to a massive legal gray area.</p>
+        <p>So, who were the biggest players? Where were they operating? And how much of this business passed through their hands?</p>
+      </section>
+
+      <section class="prose" id="method">
+        <p class="kicker">The first pass</p>
+        <h2>Ranking the middlemen</h2>
+        <p>To find out, I started by charting the overall global leaders, and the result was surprising. Mossack Fonseca, the firm at the center of what became a global scandal, ranked second with 4,364 connected entities. A much less familiar Hong Kong company, Orion House Services (HK) Limited, took first place with an outsized 7,016 entities.</p>
+      </section>
+
+      <figure class="viz-block wide" id="findings">
+        <div class="figure-heading">
+          <span class="figure-number">01</span>
+          <div><h3>The apparent leader</h3><p>Hover over the bars for recorded country and ID details.</p></div>
+        </div>
+        <div class="tableau-frame ratio-bars">
+          <iframe title="Top 10 Panama Papers intermediaries by connected entities" loading="lazy" src="https://public.tableau.com/views/ThePanamaPapersFullRecoveredWorkbook/FirstChart?:showVizHome=no&:embed=true&:toolbar=no&:tabs=no&:refresh=yes" allowfullscreen></iframe>
+        </div>
+        <figcaption>Orion House Services appeared first with 7,016 connected entities; the main Mossack Fonseca record ranked second with 4,364. The ranking reflected individual database names.</figcaption>
+        <a class="tableau-link" href="https://public.tableau.com/views/ThePanamaPapersFullRecoveredWorkbook/FirstChart?:showVizHome=yes" target="_blank" rel="noopener">Open this chart on Tableau Public ↗</a>
+      </figure>
+
+      <section class="prose">
+        <p>Why was an obscure Hong Kong intermediary outperforming the very firm at the center of the leak?</p>
+        <p>I followed that lead and filtered by geography. The British Virgin Islands (BVI) dominated the registration data with 113,648 entities—more than twice Panama's 48,360—while the Bahamas trailed far behind at 15,915. Whatever was happening in the shadows of offshore finance, an extraordinary number of company registrations were heavily concentrated in this single, small British Overseas Territory.</p>
+        <p>To unmask how a tiny Caribbean archipelago came to host twice as many corporate entities as any other jurisdiction in my Panama Papers dataset, we must look at the political decisions of the 1980s that enabled corporate secrecy. The landscape shifted under Margaret Thatcher’s regime, which ruthlessly axed Britain’s exchange controls—a move that dismantled the historical guardrails on capital flight and cleared the path for vast, international movements of capital. Five years later, the British Virgin Islands enacted the 1984 International Business Companies Act, forging a legal fortress that facilitated aggressive tax avoidance and shielded companies from public scrutiny.</p>
+        <p>The BVI’s official registry notably lacked beneficial owner information, meaning the public record was blind to who ultimately owned the wealth or what operations they ran. A murky network of registered agents, dummy nominee directors, and phantom corporations created a labyrinth of plausible deniability. Unmasking the individual behind a BVI company meant chasing a paper trail through a global matrix of conflicting laws and tight-lipped jurisdictions, creating an immense burden for investigators attempting to trace the ultimate owners.</p>
+        <p>By 2011, this offshore industry was so lucrative that incorporation fees fueled over 60% of the entire BVI government's revenue. The territory was hooked on the cash cow of corporate concealment, while an elite class of lawyers and facilitators collected their fees.</p>
+        <p>Ultimately, the 113,648 BVI registrations reveal the extraordinary scale of an offshore incorporation industry built to accommodate international demand for corporate anonymity.</p>
+      </section>
+
+      <figure class="viz-block wide">
+        <div class="figure-heading">
+          <span class="figure-number">02</span>
+          <div><h3>Where entities were registered</h3><p>The British Virgin Islands tower over every other jurisdiction.</p></div>
+        </div>
+        <div class="tableau-frame ratio-bars">
+          <iframe title="Panama Papers entity registrations by jurisdiction" loading="lazy" src="https://public.tableau.com/views/ThePanamaPapersFullRecoveredWorkbook/SecondChart?:showVizHome=no&:embed=true&:toolbar=no&:tabs=no&:refresh=yes" allowfullscreen></iframe>
+        </div>
+        <figcaption>Distinct entity registrations by jurisdiction in the cleaned Panama Papers relationship data.</figcaption>
+      </figure>
+
+      <section class="prose">
+        <p>A heatmap comparing the ten leading intermediaries revealed another pattern. Orion House Services (HK) Limited had connections spread globally across several jurisdictions, including Samoa, Seychelles, and British Anguilla. The darker the cells on the heatmap, the more entities appeared in that jurisdiction, and the BVI column was practically shouting for attention.</p>
+        <p>So I narrowed the investigation: How many entities are we talking about here?</p>
+      </section>
+
+      <figure class="viz-block wide">
+        <div class="figure-heading">
+          <span class="figure-number">03</span>
+          <div><h3>The BVI column lights up</h3><p>Darker cells represent more connected entities.</p></div>
+        </div>
+        <div class="tableau-frame ratio-heatmap">
+          <iframe title="Registration jurisdictions across the original top 10 Panama Papers intermediaries" loading="lazy" src="https://public.tableau.com/views/ThePanamaPapersFullRecoveredWorkbook/ThirdChart?:showVizHome=no&:embed=true&:toolbar=no&:tabs=no&:refresh=yes" allowfullscreen></iframe>
+        </div>
+        <figcaption>The heatmap compares distinct connected entities across registration jurisdictions for the ten intermediaries in the ranking.</figcaption>
+      </figure>
+
+      <section class="prose">
+        <p>When I cross-referenced by country, Hong Kong emerged as the center of gravity, with its intermediaries connected to 27,152 distinct BVI entities. Switzerland followed at a distant second. Hong Kong also held 1,984 distinct intermediary records connected to those BVI companies.</p>
+        <p>But was this offshore business distributed among thousands of competing providers—or were a few dominant players doing all the heavy lifting?</p>
+      </section>
+
+      <figure class="viz-block wide">
+        <div class="figure-heading">
+          <span class="figure-number">04</span>
+          <div><h3>A concentrated market</h3><p>Ten records account for more than a third of the Hong Kong–BVI entity pool.</p></div>
+        </div>
+        <div class="tableau-frame ratio-bars">
+          <iframe title="Top 10 Hong Kong intermediaries linked to BVI entities" loading="lazy" src="https://public.tableau.com/views/ThePanamaPapersFullRecoveredWorkbook/FOURTHCHART?:showVizHome=no&:embed=true&:toolbar=no&:tabs=no&:refresh=yes" allowfullscreen></iframe>
+        </div>
+        <figcaption>Just ten records were connected to 9,546 BVI entities—35.16% of the entire Hong Kong–BVI entity pool. Offshore Business Consultant (Int’l) Limited led with 3,229 entities.</figcaption>
+      </figure>
+
+      <section class="prose">
+        <p>When I dug deeper, the concentration became stark. Just ten records out of 1,984 accounted for more than a third of the connected entities. That is roughly half of one percent of intermediary records facilitating over 35% of the Hong Kong–BVI entity pool.</p>
+        <p>This didn't look like a fragmented financial marketplace; it looked like a factory assembly line. I checked unique entity IDs against intermediary names to make sure repeated strings or duplicate relationships were not distorting the figures. The 35.16% held.</p>
+        <p>I was ready to wrap up the project, print the charts, and call it a day. But then I took one last look at my original global leaderboard. And there it was, glaring right back at me.</p>
+      </section>
+
+      <section class="twist-band" id="twist">
+        <div class="twist-inner">
+          <p class="kicker">The plot twist</p>
+          <h2>Was Orion House really number one?</h2>
+          <p>Mossack Fonseca wasn't just sitting quietly in second place. Its name appeared five separate times on the top ten chart: the main firm, Singapore, Geneva, the United Kingdom, and Peru.</p>
+          <p>Because of how the data was entered, the database treated them as completely separate names, and my initial charts read them as separate competitors. I wasn’t looking at a group of rivals. I was looking at the tentacles of an enormous octopus.</p>
+        </div>
+      </section>
+
+      <section class="prose">
+        <p>This was the moment ordinary chart-making turned into detective work. I returned to the database and began running Boolean string searches, hunting for variations of the Mossack Fonseca name. Each search raised another question. Some matches belonged together; others were false positives. I had to distinguish intermediary names from intermediary IDs, test increasingly precise search terms, and check the distinct entity counts after each iteration.</p>
+        <p>Eventually, a search for the full corporate name brought 35 intermediary IDs together, revealing 19,214 connected entities. Satisfied, I moved on and produced several revised charts. Then another name surfaced: MossFon Managers Ltd. It had escaped the original Boolean searches entirely. Expanding the grouping rule to include every MOSSFON variant required rerunning the distinct-entity counts and revising the charts I’d only just finished. The apparent conclusion had been premature.</p>
+      </section>
+
+      <section class="audit-block" aria-labelledby="audit-title">
+        <p class="kicker">Entity-resolution audit</p>
+        <h3 id="audit-title">The Boolean search audit</h3>
+        <p class="audit-intro">Broad searches surfaced possible matches; narrower expressions separated corporate records from surname-based false positives. Every entity total below is a distinct-ID union, not a sum of bars.</p>
+        <table class="audit-table">
+          <thead>
+            <tr>
+              <th scope="col">Search expression</th>
+              <th scope="col">Distinct intermediary IDs</th>
+              <th scope="col">Distinct connected entities</th>
+              <th scope="col">Interpretation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>MOSSACK</code></td>
+              <td>44</td>
+              <td>19,284</td>
+              <td>Broad initial search, including potentially unrelated matches.</td>
+            </tr>
+            <tr>
+              <td><code>MOSSACK OR FONSECA</code></td>
+              <td>59</td>
+              <td>19,445</td>
+              <td>Expanded surname search that introduced additional false positives.</td>
+            </tr>
+            <tr>
+              <td><code>MOSSACK FONSECA</code></td>
+              <td>35</td>
+              <td>19,214</td>
+              <td>Narrow corporate-name match.</td>
+            </tr>
+            <tr>
+              <td><code>MOSSACK FONSECA OR MOSSFON</code></td>
+              <td>46</td>
+              <td>21,535</td>
+              <td>Final grouping, including every subsequently discovered MOSSFON variant.</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="audit-note">Source: ICIJ Offshore Leaks Database, Panama Papers. Boolean string matching was performed on intermediary names. Entity counts use distinct entity IDs to avoid double-counting shared connections. The final grouping is an analytical classification of network records.</p>
+      </section>
+
+      <figure class="viz-block wide finale">
+        <div class="figure-heading">
+          <span class="figure-number">05</span>
+          <div><h3>The corrected ranking</h3><p>Entity resolution reverses the original result.</p></div>
+        </div>
+        <div class="tableau-frame ratio-bars ratio-final">
+          <iframe title="Plot twist: the Mossack Fonseca behemoth" loading="lazy" src="https://public.tableau.com/views/ThePanamaPapersFullRecoveredWorkbook/FIFTHCHART?:showVizHome=no&:embed=true&:toolbar=no&:tabs=no&:refresh=yes" allowfullscreen></iframe>
+        </div>
+        <figcaption>Grouping related Mossack Fonseca records produces 21,535 distinct connected entities—more than three times Orion House Services’ 7,017.</figcaption>
+        <a class="tableau-link" href="https://public.tableau.com/views/ThePanamaPapersFullRecoveredWorkbook/FIFTHCHART?:showVizHome=yes" target="_blank" rel="noopener">Open the final chart on Tableau Public ↗</a>
+      </figure>
+
+      <section class="climax-panel" aria-labelledby="climax-title">
+        <div class="climax-inner">
+          <p class="kicker">The reversal</p>
+          <h2 id="climax-title">The numbers that changed the story</h2>
+          <div class="number-strip" aria-label="Key findings revealed by the completed investigation">
+            <div><strong>21,535</strong><span>distinct entities connected to the grouped Mossack Fonseca network</span></div>
+            <div><strong>7,017</strong><span>distinct entities connected to Orion House Services</span></div>
+            <div><strong>35.16%</strong><span>of distinct BVI entities connected to Hong Kong intermediaries were linked to the ten leading Hong Kong intermediary IDs</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="prose conclusion">
+        <p class="kicker">What the chart concealed</p>
+        <h2>The data was answering a different question</h2>
+        <p>The result inverted the original ranking. Mossack Fonseca, which initially appeared in second place with 4,364 connected entities, emerged as a behemoth of 21,535 distinct entities, dwarfing Orion House Services' 7,017. More than three times as many.</p>
+        <p>According to investigative reports, Mossack Fonseca operated more than 40 international offices before its collapse in 2018. That operational model helps explain why its name was fractured across so many separate database rows.</p>
+        <p>And that is the real twist of this data journey. My original chart wasn't technically wrong; it was simply answering a different question than the one I thought I was asking. The raw data showed the largest names on individual pieces of paper. It completely obscured where one corporate empire ended and another began.</p>
+        <p>The implications extend far beyond a misleading leaderboard. The BVI’s incorporation laws transformed corporate camouflage into a highly profitable industry, feeding a global network of facilitators who grew wealthy by burying the truth in layers of paperwork. Behind these immaculate structures lies a grotesque double standard. Ordinary citizens face the full weight of tax audits and legal penalties, while the international legal framework provides a VIP escape hatch for plundered wealth, making stolen public funds practically vanish. The incorporation factory collects its fees with indifference, completely detached from the slow, invisible bleeding of the communities left holding the bill.</p>
+        <p>The Boolean searches exposed the scale of a network fragmented across dozens of intermediary records. To establish its full reach would mean going beyond the ICIJ dataset, examining corporate registries, tracing historical affiliations, and verifying the relationships behind those names. Applying this same forensic approach today would mean tracking how modern intermediary networks in hubs like Singapore use layered shell structures to circumvent export controls on advanced AI chips.</p>
+        <p>For now, the numbers have made one thing unmistakable: the octopus was there all along, hiding in plain sight.</p>
+      </section>
+
+      <footer class="article-footer">
+        <div>
+          <p class="footer-label">Data and method</p>
+          <p>Analysis uses the ICIJ Offshore Leaks Database’s Panama Papers entity, intermediary and relationship records. Counts are distinct entity IDs. The final Mossack Fonseca group contains 46 intermediary IDs: 35 whose names begin with “MOSSACK FONSECA” and 11 containing the shortened “MOSSFON” form.</p>
+        </div>
+        <div>
+          <p class="footer-label">Explore</p>
+          <a href="https://offshoreleaks.icij.org/" target="_blank" rel="noopener">ICIJ Offshore Leaks Database ↗</a>
+          <a href="https://www.theguardian.com/uk/2012/nov/25/offshore-secrets-british-virgin-islands" target="_blank" rel="noopener">The Guardian: “Offshore secrets: British Virgin Islands, land of sand, sea and secrecy” ↗</a>
+          <a href="https://public.tableau.com/views/ThePanamaPapersFullRecoveredWorkbook/PlotTwistTheMossackFonsecaBehemoth?:showVizHome=yes" target="_blank" rel="noopener">Full Tableau workbook ↗</a>
+        </div>
+        <section class="author-card" aria-labelledby="author-name">
+          <img src="assets/kelsea-scarlett-author-portrait-color.png" alt="Portrait of Kelsea Scarlett.">
+          <div>
+            <p class="footer-label">About the author</p>
+            <h2 id="author-name">Kelsea Scarlett</h2>
+            <p>Kelsea Scarlett is a graduate student in Data Analysis and Visualization at the CUNY Graduate Center. Her research interests include anti-money laundering (AML), financial crime, corporate networks, and the movement of alternative assets, with particular attention to art and cultural property markets. Her work integrates investigative data analysis with perspectives from art history, critical theory, and information systems.</p>
+          </div>
+        </section>
+      </footer>
+    </article>
+  </main>
+  <script src="script.js"></script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a5b835328c36f791',t:'MTc5NDg1MDA2MQ=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a5b835328c36f791',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
